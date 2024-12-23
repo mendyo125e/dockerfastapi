@@ -83,7 +83,7 @@ def fetch_data_from_api(url):
         return None
 def lambda_handler():
     # Cấu hình trình duyệt
-    options = webdriver.ChromeOptions()
+    chrome_options = webdriver.ChromeOptions()
     #chrome_options.add_argument("--headless")  # Chạy chế độ không giao diện
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -151,7 +151,7 @@ def lambda_handler():
             url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
             fetch_data_from_api(url)
             vonglap=False
-        chrome_options = Options()
+        #chrome_options = Options()
 
         #chrome_options.browser_version = "130"
        #chrome_options.platform_name = "Windows 10"
