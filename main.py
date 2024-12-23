@@ -105,12 +105,6 @@ def lambda_handler():
     random_color = random_color_by_name(namesms)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-        # Mở trang web ví dụ
-    driver.get("https://www.google.com")
-    title = driver.title
-
-
-    print(title)
     # Khởi tạo WebDriver 
     try:
         url = "https://hieuphp.name.vn/api/undetected/getdata.php"  
@@ -154,30 +148,8 @@ def lambda_handler():
             url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
             fetch_data_from_api(url)
             vonglap=False
-        #chrome_options = Options()
 
-        #chrome_options.browser_version = "130"
-       #chrome_options.platform_name = "Windows 10"
-        #lt_options = {};
-        #lt_options["username"] = "alexschmidt63ng";
-        #lt_options["accessKey"] = "evq0nRPGqRSZOQtu2hcYW2xy18CgxDjUotY1vYFD491PfVxPcd";
-        #lt_options["smartUI.project"] = "alexschmidt63ng";
-        #lt_options["resolution"] = "1024x768";
-        #lt_options["recordVideo"] = "true";
-        #lt_options["browserName"] = "Chrome";
-        #lt_options["w3c"] = True;
-        #lt_options["selenium_version"] = "4.0.0";
-        #lt_options["plugin"] = "python-python";
-        #chrome_options.set_capability('LT:Options', lt_options);
-
-         #driver = webdriver.Remote(command_executor="http://hub.lambdatest.com:80/wd/hub",options=chrome_options)
-       
-
-
-        print("abc") 
         cookieactive=0
-    
-        #driver = uc.Chrome(options, driver_executable_path=driver_path, browser_executable_path=browser_path,version_main=108 )
         url="https://www.chotot.com/my-ads"
         driver.get(url)    
         nologin=2        
@@ -232,7 +204,7 @@ def lambda_handler():
             print("Nội dung văn bản của 1 <body>:", body_element)
     
         if int(nhansms) ==1:
-            timeout = 3       
+            timeout = 60      
             end_time = time.time() + timeout
             while True:
                 try:
