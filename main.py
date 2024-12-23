@@ -100,7 +100,7 @@ def lambda_handler():
     tokensms = data.get("token", None)
     usersms = data.get("user", None)
     random_color = random_color_by_name(namesms)
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
         # Mở trang web ví dụ
     driver.get("https://www.google.com")
