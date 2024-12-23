@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import urllib3,urllib.parse
 import random,time
 import os
@@ -82,12 +83,14 @@ def fetch_data_from_api(url):
         return None
 def lambda_handler():
     # Cấu hình trình duyệt
-    chrome_options = Options()
+    options = webdriver.ChromeOptions()
     #chrome_options.add_argument("--headless")  # Chạy chế độ không giao diện
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
     message_value = 0 
     i=0
     vonglap=True
@@ -97,8 +100,14 @@ def lambda_handler():
     tokensms = data.get("token", None)
     usersms = data.get("user", None)
     random_color = random_color_by_name(namesms)
-    service = Service("/usr/local/bin/chromedriver")  # Đường dẫn cho Render
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+        # Mở trang web ví dụ
+    driver.get("https://www.google.com")
+    title = driver.title
+
+
+    print(title)
     # Khởi tạo WebDriver 
     try:
         url = "https://hieuphp.name.vn/api/undetected/getdata.php"  
@@ -159,7 +168,7 @@ def lambda_handler():
         #chrome_options.set_capability('LT:Options', lt_options);
 
          #driver = webdriver.Remote(command_executor="http://hub.lambdatest.com:80/wd/hub",options=chrome_options)
-        driver = webdriver.Remote(command_executor="http://10.210.44.94:4444/wd/hub",options=chrome_options)
+       
 
 
         print("abc") 
