@@ -81,7 +81,7 @@ def fetch_data_from_api(url):
     else:
         print(f"Lỗi khi gửi yêu cầu GET, mã trạng thái: {response.status}")
         return None
-def lambda_handler():
+def lambda_handler(items):
     start_time = time.time()
     message_value = 0 
     i=0
