@@ -242,7 +242,7 @@ def lambda_handler():
                 print("Nội dung văn bản của 1 <body>:", body_element)
 
             if int(nhansms) ==1:
-                timeout = 60       
+                timeout = 20       
                 end_time = time.time() + timeout
                 while True:
                     try:
@@ -291,10 +291,7 @@ def lambda_handler():
             if int(testversion) ==1:
                 driver.get("chrome://version/")
                 body_element = driver.find_element("tag name", "body").text
-                print("Nội dung văn bản của 1 <body>:", body_element)
-            url = 'http://hieuphp.name.vn/api/undetected/updatestatus.php'
-            updatestatus(namefolder,url,"")     
-                                  
+                print("Nội dung văn bản của 1 <body>:", body_element)                       
             time.sleep(0)
                
         except Exception as e:
