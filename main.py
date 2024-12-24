@@ -105,7 +105,7 @@ def lambda_handler():
     }
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
-    chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
+    #chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-gpu")  # Tắt GPU
     chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
@@ -148,6 +148,9 @@ def lambda_handler():
         "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
     })
     cookieactive=0
+    urlttrangchu="https://chat.chotot.com/chat"
+
+    driver.get(urlttrangchu) 
     # Khởi tạo WebDriver "*app-78fdf02df188280d.js*","*framework-670e37c48389d36a.js*",
     while vonglap==True: 
         try:
@@ -190,7 +193,7 @@ def lambda_handler():
             else:
                 print("Đã kiểm tra hết các trang")
                 url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
-                #fetch_data_from_api(url)
+                fetch_data_from_api(url)
                 end_time = time.time()
                 elapsed_time = end_time - start_time 
                 vonglap=False
@@ -198,14 +201,9 @@ def lambda_handler():
                 break
            
             #https://chat.chotot.com/chat
-            if int(noidungtin)==0:
-                url="https://www.chotot.com/my-ads"
-            else:    
-                url="https://chat.chotot.com/chat"
-
-            driver.get(url)    
+       
             nologin=2        
-            time.sleep(1)
+            time.sleep(5)
             dathemcookie=0
             cookieactive=1   
             loithemcookie=0
@@ -245,10 +243,11 @@ def lambda_handler():
 
                 if dathemcookie==1:
                     print("Đã thêm cookie") 
-                    driver.refresh() 
-                    
-                    #driver.get(url)
-                    time.sleep(1)
+                    if i==0:
+                        driver.get(urlttrangchu)
+                    else:
+                        driver.refresh()     
+                    time.sleep(0)
                     #getcookie=json.dumps(driver.get_cookies())
                     #url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
                     #updatestatus1=updatestatus(namefolder,url,getcookie)
