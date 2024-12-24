@@ -82,8 +82,10 @@ def fetch_data_from_api(url):
         print(f"Lỗi khi gửi yêu cầu GET, mã trạng thái: {response.status}")
         return None
 def lambda_handler():
+    start_time = time.time()
     message_value = 0 
     i=0
+    elapsed_time=0
     vonglap=True
     url = "https://hieuphp.name.vn/api/undetected/systemapi.php?all=1"  
     data = fetch_data_from_api(url)
@@ -171,6 +173,8 @@ def lambda_handler():
                 print("Đã kiểm tra hết các trang")
                 url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
                 fetch_data_from_api(url)
+                end_time = time.time()
+                elapsed_time = end_time - start_time 
                 vonglap=False
                 break
            
@@ -300,9 +304,10 @@ def lambda_handler():
             url = "https://hieuphp.name.vn/api/undetected/getdata.php?all=1"  
             fetch_data_from_api(url)
             vonglap=False
-            driver.quit()  
+            driver.quit() 
             break  # Thoát vòng lặp khi message_value = 1 
-    return f"kết quả của trang là 1"
+    print(f"Tổng thời gian xử lý là {elapsed_time} giây")    
+    return f"Tổng thời gian xử lý là {elapsed_time} giây"
 
 @app.get("/", response_class=HTMLResponse)
 async def read_index():
