@@ -105,7 +105,8 @@ def lambda_handler():
     }
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
-    chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
+    if items==123 or items==1:
+        chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-gpu")  # Tắt GPU
     chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
@@ -125,28 +126,28 @@ def lambda_handler():
     chrome_options.add_argument('--remote-debugging-port=9222') 
 
   
-
-    #chrome_options.browser_version = "130"
-    #chrome_options.platform_name = "Windows 10"
-    lt_options = {};
-    lt_options["username"] = "alexschmidt63ng";
-    lt_options["accessKey"] = "evq0nRPGqRSZOQtu2hcYW2xy18CgxDjUotY1vYFD491PfVxPcd";
-    lt_options["smartUI.project"] = "alexschmidt63ng";
-    lt_options["resolution"] = "1024x768";
-    lt_options["recordVideo"] = "false";
-    lt_options["browserName"] = "Chrome";
-    lt_options["w3c"] = False;
-    lt_options["selenium_version"] = "4.0.0";
-    lt_options["plugin"] = "python-python";
-    #chrome_options.set_capability('LT:Options', lt_options);
-
-    #driver = webdriver.Remote(command_executor="http://hub.lambdatest.com:80/wd/hub",options=chrome_options)
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    driver.execute_cdp_cmd("Network.enable", {})
-    driver.execute_cdp_cmd("Network.setBlockedURLs", {
-        "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
-    })
+    if items!=123:    
+        chrome_options.browser_version = "130"
+        chrome_options.platform_name = "Windows 10"
+        lt_options = {};
+        lt_options["username"] = "alexschmidt63ng";
+        lt_options["accessKey"] = "evq0nRPGqRSZOQtu2hcYW2xy18CgxDjUotY1vYFD491PfVxPcd";
+        lt_options["smartUI.project"] = "alexschmidt63ng";
+        lt_options["resolution"] = "1024x768";
+        lt_options["recordVideo"] = "false";
+        lt_options["browserName"] = "Chrome";
+        lt_options["w3c"] = False;
+        lt_options["selenium_version"] = "4.0.0";
+        lt_options["plugin"] = "python-python";
+        chrome_options.set_capability('LT:Options', lt_options);
+        driver = webdriver.Remote(command_executor="http://hub.lambdatest.com:80/wd/hub",options=chrome_options)
+    else:
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver.execute_cdp_cmd("Network.enable", {})
+        driver.execute_cdp_cmd("Network.setBlockedURLs", {
+            "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
+        })
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")    
     cookieactive=0
     urlttrangchu="https://chat.chotot.com/chat"
 
@@ -203,12 +204,11 @@ def lambda_handler():
             #https://chat.chotot.com/chat
        
             nologin=2        
-            time.sleep(5)
+            time.sleep(0)
             dathemcookie=0
             cookieactive=1   
             loithemcookie=0
-            if int(cookieactive) == 1:
-
+            if int(noidungtin) == 0:
                 for cookie in cookies:
                     cookie = convert_boolean_values(cookie)
                     loaibo=cookie.get('domain')
@@ -242,17 +242,28 @@ def lambda_handler():
                 #print(f"Số lỗi khi thêm cookie : {loithemcookie} ")
 
                 if dathemcookie==1:
-                    print("Đã thêm cookie") 
-                    if i==0:
-                        driver.get(urlttrangchu)
-                    else:
-                        driver.refresh()     
+                    print("Đã thêm cookie")    
                     time.sleep(0)
-                    #getcookie=json.dumps(driver.get_cookies())
-                    #url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
+                    getcookie=json.dumps(driver.get_cookies())
+                    print(getcookie)
+                    url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
                     #updatestatus1=updatestatus(namefolder,url,getcookie)
-                    #print(f"update sesion theo {namefolder}: {updatestatus1}")
+                    #print(f"update cookie chưa lọc theo {namefolder}: {updatestatus1}")
+            else:
+                for cookie in cookies:
+                    try:
+                        driver.add_cookie(cookie)  # Thêm cookie
+                        dathemcookie=1
+                    except Exception as e:
+                        #print(f"cookie lỗi {cookie}")
+                        loithemcookie+=1
+                print(f"đã add cookie đã lọc")   
+
             time.sleep(0) 
+            if i==0:
+                driver.get(urlttrangchu)
+            else:
+                driver.refresh()  
             #fetch_data_from_api(url)      
             if int(testbodyelement) ==1:
                 body_element = driver.find_element("tag name", "body").text
@@ -338,8 +349,8 @@ async def read_index():
         
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
-    if item_id == 123:
-        result = lambda_handler()
+    if item_id == 123 or item_id == 1:
+        result = lambda_handler(item_id)
         return JSONResponse(content={"item_id": item_id, "result": result})
     return {"item_id": item_id, "q": q}
     
