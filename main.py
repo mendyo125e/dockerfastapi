@@ -91,7 +91,43 @@ def lambda_handler():
     tokensms = data.get("token", None)
     usersms = data.get("user", None)
     random_color = random_color_by_name(namesms)
-   
+     # Cấu hình trình duyệt
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_argument("--blink-settings=imagesEnabled=false")  # Chặn tải hình ảnh
+    prefs = {
+    "profile.managed_default_content_settings.images": 2,  # Chặn hình ảnh
+    "profile.managed_default_content_settings.stylesheets": 2,  # Chặn CSS
+    "profile.managed_default_content_settings.javascript": 1,  # Bật JavaScript
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
+    chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-gpu")  # Tắt GPU
+    chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
+    chrome_options.add_argument("--disable-software-rasterizer")  # Tắt dự phòng software WebGL
+    chrome_options.add_argument("--enable-unsafe-swiftshader")  # Bật chế độ SwiftShader nếu cần
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument('--window-size=1280x1696')
+    chrome_options.add_argument("--disable-web-security")
+    chrome_options.add_argument("--disable-site-isolation-trials")
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled") 
+    chrome_options.add_argument('--disable-dev-tools')
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--no-zygote')
+    chrome_options.add_argument('--remote-debugging-port=9222') 
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    driver.execute_cdp_cmd("Network.enable", {})
+    driver.execute_cdp_cmd("Network.setBlockedURLs", {
+        "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
+    })
+    cookieactive=0
     # Khởi tạo WebDriver "*app-78fdf02df188280d.js*","*framework-670e37c48389d36a.js*",
     while vonglap==True: 
         try:
@@ -137,43 +173,7 @@ def lambda_handler():
                 fetch_data_from_api(url)
                 vonglap=False
                 break
-            # Cấu hình trình duyệt
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option("useAutomationExtension", False)
-            chrome_options.add_argument("--blink-settings=imagesEnabled=false")  # Chặn tải hình ảnh
-            prefs = {
-            "profile.managed_default_content_settings.images": 2,  # Chặn hình ảnh
-            "profile.managed_default_content_settings.stylesheets": 2,  # Chặn CSS
-            "profile.managed_default_content_settings.javascript": 1,  # Bật JavaScript
-            }
-            chrome_options.add_experimental_option("prefs", prefs)
-            chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
-            chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-gpu")  # Tắt GPU
-            chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
-            chrome_options.add_argument("--disable-software-rasterizer")  # Tắt dự phòng software WebGL
-            chrome_options.add_argument("--enable-unsafe-swiftshader")  # Bật chế độ SwiftShader nếu cần
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-            chrome_options.add_argument("--disable-notifications")
-            chrome_options.add_argument('--window-size=1280x1696')
-            chrome_options.add_argument("--disable-web-security")
-            chrome_options.add_argument("--disable-site-isolation-trials")
-            chrome_options.add_argument("--disable-notifications")
-            chrome_options.add_argument("--disable-blink-features=AutomationControlled") 
-            chrome_options.add_argument('--disable-dev-tools')
-            chrome_options.add_argument('--ignore-certificate-errors')
-            chrome_options.add_argument('--no-zygote')
-            chrome_options.add_argument('--remote-debugging-port=9222') 
-            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-            driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            driver.execute_cdp_cmd("Network.enable", {})
-            driver.execute_cdp_cmd("Network.setBlockedURLs", {
-                "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
-            })
-            cookieactive=0
+           
             #https://chat.chotot.com/chat
             url="https://www.chotot.com/my-ads"
 
@@ -289,7 +289,7 @@ def lambda_handler():
                 print("Nội dung văn bản của 1 <body>:", body_element)
             url = 'http://hieuphp.name.vn/api/undetected/updatestatus.php'
             updatestatus(namefolder,url,"")     
-            driver.quit()                        
+                                  
             time.sleep(0)
                
         except Exception as e:
@@ -300,6 +300,7 @@ def lambda_handler():
             url = "https://hieuphp.name.vn/api/undetected/getdata.php?all=1"  
             fetch_data_from_api(url)
             vonglap=False
+            driver.quit()  
             break  # Thoát vòng lặp khi message_value = 1 
     return f"kết quả của trang là 1"
 
