@@ -234,7 +234,7 @@ def lambda_handler():
                     getcookie=json.dumps(driver.get_cookies())
                     url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
                     updatestatus1=updatestatus(namefolder,url,getcookie)
-                    print(f"update sesion theo namefolder: {updatestatus1}")
+                    print(f"update sesion theo {namefolder}: {updatestatus1}")
             time.sleep(0) 
             #fetch_data_from_api(url)      
             if int(testbodyelement) ==1:
