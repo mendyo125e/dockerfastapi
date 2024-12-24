@@ -82,18 +82,6 @@ def fetch_data_from_api(url):
         print(f"Lỗi khi gửi yêu cầu GET, mã trạng thái: {response.status}")
         return None
 def lambda_handler():
-    # Cấu hình trình duyệt
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless")  # Chạy chế độ không giao diện
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--window-size=1920,1080")
-    chrome_options.add_argument("--disable-extensions")  # Vô hiệu hóa extensions
-    chrome_options.add_argument("--disable-software-rasterizer")
-    chrome_options.add_argument("--disable-gpu")
     message_value = 0 
     i=0
     vonglap=True
@@ -103,167 +91,217 @@ def lambda_handler():
     tokensms = data.get("token", None)
     usersms = data.get("user", None)
     random_color = random_color_by_name(namesms)
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
-    # Khởi tạo WebDriver 
-    try:
-        url = "https://hieuphp.name.vn/api/undetected/getdata.php"  
-        data = fetch_data_from_api(url)
+   
+    # Khởi tạo WebDriver "*app-78fdf02df188280d.js*","*framework-670e37c48389d36a.js*",
+    while vonglap==True: 
         try:
-            message_value = data.get("message", None)
+            url = "https://hieuphp.name.vn/api/undetected/getdata.php"  
+            data = fetch_data_from_api(url)
+            try:
+                message_value = data.get("message", None)
+            except Exception as e:
+                message_value=0
+                
+            if message_value!=1:
+                # In dữ liệu trả về (có thể tùy chỉnh để chỉ lấy các trường cụ thể)
+                
+                for record in data:
+                    
+                    #print(f"Email: {record.get('email', 'Không có email')}")
+                    cookie_data=record.get('cookie', 'Không có cookie')
+                    cookies = json.loads(cookie_data)
+                        #cookies = cookie_dict.get("cookies", [])
+                    #print(f"Cookie: {cookies}") 
+                    namefolder=record.get('namefolder', 'Không có namefolder')
+                    #print(f"Name Folder: {namefolder}")
+                    nameapp=record.get('nameapp', 'Không có nameapp')
+                    #print(f"Name App: {nameapp}")
+                    cookieactive=record.get('cookieactive', 'Không có cookieactive')
+                    #print(f"Cookie Active: {cookieactive}")
+                    testversion=record.get('testversion', 'Không có testversion')
+                    #print(f"Test Version: {testversion}")
+                    testbodyelement=record.get('testbodyelement', 'Không có testbodyelement')
+                    print(f"Test Body Element: {testbodyelement}")
+                    viewtmp=record.get('viewtmp', 'Không có xem tmp')
+                    print(f"Xem tmp: {viewtmp}")
+                    nhansms=record.get('nhansms', 'Không có nhansms')
+                    print(f"nhansms: {nhansms}")
+                    noidungtin=record.get('noidungtin', 'Không có noidungtin')
+                    print(f"noidungtin: {noidungtin}")
+                    status=record.get('status', 'Không có status')
+                    print(f"Status: {status}") 
+                                        
+            else:
+                print("Đã kiểm tra hết các trang")
+                url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
+                fetch_data_from_api(url)
+                vonglap=False
+                break
+            # Cấu hình trình duyệt
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option("useAutomationExtension", False)
+            chrome_options.add_argument("--blink-settings=imagesEnabled=false")  # Chặn tải hình ảnh
+            prefs = {
+            "profile.managed_default_content_settings.images": 2,  # Chặn hình ảnh
+            "profile.managed_default_content_settings.stylesheets": 2,  # Chặn CSS
+            "profile.managed_default_content_settings.javascript": 1,  # Bật JavaScript
+            }
+            chrome_options.add_experimental_option("prefs", prefs)
+            chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
+            chrome_options.add_argument("--headless")  # Chạy chế độ không giao diện
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-gpu")  # Tắt GPU
+            chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
+            chrome_options.add_argument("--disable-software-rasterizer")  # Tắt dự phòng software WebGL
+            chrome_options.add_argument("--enable-unsafe-swiftshader")  # Bật chế độ SwiftShader nếu cần
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_argument("--disable-notifications")
+            chrome_options.add_argument('--window-size=1280x1696')
+            chrome_options.add_argument("--disable-web-security")
+            chrome_options.add_argument("--disable-site-isolation-trials")
+            chrome_options.add_argument("--disable-notifications")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled") 
+            chrome_options.add_argument('--disable-dev-tools')
+            chrome_options.add_argument('--ignore-certificate-errors')
+            chrome_options.add_argument('--no-zygote')
+            chrome_options.add_argument('--remote-debugging-port=9222') 
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+            driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            driver.execute_cdp_cmd("Network.enable", {})
+            driver.execute_cdp_cmd("Network.setBlockedURLs", {
+                "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
+            })
+            cookieactive=0
+            #https://chat.chotot.com/chat
+            url="https://www.chotot.com/my-ads"
+
+            driver.get(url)    
+            nologin=2        
+            time.sleep(1)
+            dathemcookie=0
+            cookieactive=1   
+            loithemcookie=0
+            if int(cookieactive) == 1:
+
+                for cookie in cookies:
+                    cookie = convert_boolean_values(cookie)
+                    loaibo=cookie.get('domain')
+                    if  loaibo == "www.chotot.com" or loaibo == ".www.chotot.com":
+                        print(f"Loại bỏ cookie có domain 'www.chotot.com'")
+                        continue 
+                    # Chuyển đổi expiry từ mili-giây sang giây (nếu có)
+                    if 'expiry' in cookie and isinstance(cookie['expiry'], (int, float)):
+                        if cookie['expiry'] > 1e10:  # Giả sử giá trị lớn hơn 1e10 là mili-giây
+                            cookie['expiry'] = int(cookie['expiry'] / 1000)
+
+                    if "expirationDate" in cookie:
+                        cookie["expiry"] = int(cookie["expirationDate"])  # Chuyển đổi thành 'expiry' 
+                        #print(f"cookie thường {cookie}")
+                        expirationDate=cookie["expirationDate"]
+                        #print(f"cookie thường {expirationDate}")
+                        del cookie["expirationDate"]  # Xóa trường không được hỗ trợ
+                        
+
+                    invalid_fields = ['sameSite', 'storeId', 'session', 'hostOnly']
+
+                    for field in invalid_fields:
+                        cookie.pop(field, None)  # Loại bỏ các trường không hợp lệ
+                    
+                    try:
+                        driver.add_cookie(cookie)  # Thêm cookie
+                        dathemcookie=1
+                    except Exception as e:
+                        loithemcookie+=1
+
+                #print(f"Số lỗi khi thêm cookie : {loithemcookie} ")
+
+                if dathemcookie==1:
+                    print("Đã thêm cookie") 
+                    #driver.refresh() 
+                    if int(noidungtin)==0:
+                        url="https://www.chotot.com/my-ads"
+                    else:    
+                        url="https://chat.chotot.com/chat"
+                    driver.get(url)
+                    time.sleep(1)
+                    getcookie=json.dumps(driver.get_cookies())
+                    url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
+                    updatestatus1=updatestatus(namefolder,url,getcookie)
+                    print(f"update sesion theo namefolder: {updatestatus1}")
+            time.sleep(0) 
+            #fetch_data_from_api(url)      
+            if int(testbodyelement) ==1:
+                body_element = driver.find_element("tag name", "body").text
+                print("Nội dung văn bản của 1 <body>:", body_element)
+
+            if int(nhansms) ==1:
+                timeout = 60       
+                end_time = time.time() + timeout
+                while True:
+                    try:
+                    # Tìm phần tử chứa chữ "Đăng nhập"
+
+                        unread_count = driver.find_element(By.ID, "chat-unread-count").text
+                        
+                        if int(unread_count) > 0:
+                            priority=2 #priority [0 = Normal (default), 1 = High, 2 = Critical]
+                            group = "chotot"
+                            buttons = [{"text": f"{nameapp}", "link": "https://chotot.com/", "color":f"{random_color}"}]
+                            
+                            if int(noidungtin)==0:
+                                title = f"{nameapp}: Có {unread_count} tin nhắn"
+                                message = f"{nameapp}: bạn {namefolder} có {unread_count} tin nhắn"
+                            else:    
+                                last_message = driver.find_element(By.CSS_SELECTOR, ".styles_LastMessage__BY5e2.styles_NewMessage__pHpaN").text
+                                userchotot = driver.find_element(By.CSS_SELECTOR, ".styles_UserNameTime__B3N7j.text-1-line").text
+                                title = f"{nameapp}: Có {unread_count} tin nhắn "
+                                message = f"{nameapp}: bạn {namefolder} có khách {userchotot} hỏi {last_message}"    
+                            
+                            if namesms=="pushover":   
+                                result = guisms(tokensms, usersms, message,nameapp)
+                            elif namesms=="alertzy":     
+                                result = send_alertzy_notification(tokensms, title, message,priority,group, buttons)
+                            else:  
+                                print(f"nội dung {message}")    
+                                result =guismssystem(title,message,nologin,random_color)   
+                            print(f"Kết quả đã gửi sms cho {namefolder} {nameapp} {result}")
+                            break
+                            # Gửi thông báo 
+   
+                    except Exception as e:
+                        time.sleep(1)
+                        #print("Đợi tin nhắn")
+
+                    if time.time() > end_time:
+                        print("Hết giờ không gửi được tin nhắn") 
+                        unread_count = driver.find_element(By.ID, "chat-unread-count").text
+                        print(f"bcde {unread_count}")
+                        time.sleep(0)
+                        break
+            #time.sleep(1)
+            i+=1
+            print(f"hết vòng lập sms {i}")
+            if int(testversion) ==1:
+                driver.get("chrome://version/")
+                body_element = driver.find_element("tag name", "body").text
+                print("Nội dung văn bản của 1 <body>:", body_element)
+            url = 'http://hieuphp.name.vn/api/undetected/updatestatus.php'
+            updatestatus(namefolder,url,"")     
+            driver.quit()                        
+            time.sleep(0)
+               
         except Exception as e:
             message_value=0
-            
-        if message_value!=1:
-            # In dữ liệu trả về (có thể tùy chỉnh để chỉ lấy các trường cụ thể)
-           
-            for record in data:
-               
-                #print(f"Email: {record.get('email', 'Không có email')}")
-                cookie_data=record.get('cookie', 'Không có cookie')
-                cookies = json.loads(cookie_data)
-                 #cookies = cookie_dict.get("cookies", [])
-                #print(f"Cookie: {cookies}") 
-                namefolder=record.get('namefolder', 'Không có namefolder')
-                #print(f"Name Folder: {namefolder}")
-                nameapp=record.get('nameapp', 'Không có nameapp')
-                #print(f"Name App: {nameapp}")
-                cookieactive=record.get('cookieactive', 'Không có cookieactive')
-                #print(f"Cookie Active: {cookieactive}")
-                testversion=record.get('testversion', 'Không có testversion')
-                #print(f"Test Version: {testversion}")
-                testbodyelement=record.get('testbodyelement', 'Không có testbodyelement')
-                print(f"Test Body Element: {testbodyelement}")
-                viewtmp=record.get('viewtmp', 'Không có xem tmp')
-                print(f"Xem tmp: {viewtmp}")
-                nhansms=record.get('nhansms', 'Không có nhansms')
-                print(f"nhansms: {nhansms}")
-                noidungtin=record.get('noidungtin', 'Không có noidungtin')
-                print(f"noidungtin: {noidungtin}")
-                status=record.get('status', 'Không có status')
-                print(f"Status: {status}") 
-                                   
-        else:
-            print("Đã kiểm tra hết các trang")
-            url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
+            print("lỗi cuối dòng")
+        if int(message_value) == 1:
+            print("message_value bằng 1, thoát khỏi vòng lặp.")
+            url = "https://hieuphp.name.vn/api/undetected/getdata.php?all=1"  
             fetch_data_from_api(url)
             vonglap=False
-
-        cookieactive=0
-        url="https://www.chotot.com/my-ads"
-        driver.get(url)    
-        nologin=2        
-        time.sleep(1)
-        dathemcookie=0
-        cookieactive=1   
-        if int(cookieactive) == 1:
-            for cookie in cookies:
-                cookie = convert_boolean_values(cookie)
-                loaibo=cookie.get('domain')
-                if  loaibo == "www.chotot.com" or loaibo == ".www.chotot.com":
-                    print(f"Loại bỏ cookie có domain 'www.chotot.com'")
-                    continue 
-                # Chuyển đổi expiry từ mili-giây sang giây (nếu có)
-                if 'expiry' in cookie and isinstance(cookie['expiry'], (int, float)):
-                    if cookie['expiry'] > 1e10:  # Giả sử giá trị lớn hơn 1e10 là mili-giây
-                        cookie['expiry'] = int(cookie['expiry'] / 1000)
-
-                if "expirationDate" in cookie:
-                    cookie["expiry"] = int(cookie["expirationDate"])  # Chuyển đổi thành 'expiry' 
-                    #print(f"cookie thường {cookie}")
-                    expirationDate=cookie["expirationDate"]
-                    #print(f"cookie thường {expirationDate}")
-                    del cookie["expirationDate"]  # Xóa trường không được hỗ trợ
-                    
-
-                invalid_fields = ['sameSite', 'storeId', 'session', 'hostOnly']
-
-                for field in invalid_fields:
-                    cookie.pop(field, None)  # Loại bỏ các trường không hợp lệ
-                
-                try:
-                    driver.add_cookie(cookie)  # Thêm cookie
-                    dathemcookie=1
-                except Exception as e:
-                    loithemcookie+=1
-
-            #print(f"Số lỗi khi thêm cookie : {loithemcookie} ")
-            if dathemcookie==1:
-                print("Đã thêm cookie") 
-                #driver.refresh() 
-                driver.get(url)
-                time.sleep(1)
-                getcookie=json.dumps(driver.get_cookies())
-                url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
-                updatestatus1=updatestatus(namefolder,url,getcookie)
-                print(f"update sesion theo namefolder: {updatestatus1}")
-        time.sleep(0) 
-        #fetch_data_from_api(url)      
-        if int(testbodyelement) ==1:
-            body_element = driver.find_element("tag name", "body").text
-            print("Nội dung văn bản của 1 <body>:", body_element)
-    
-        if int(nhansms) ==1:
-            timeout = 60      
-            end_time = time.time() + timeout
-            while True:
-                try:
-                # Tìm phần tử chứa chữ "Đăng nhập"
-
-                    unread_count = driver.find_element(By.ID, "chat-unread-count").text
-                    
-                    if int(unread_count) > 0:
-                        priority=2 #priority [0 = Normal (default), 1 = High, 2 = Critical]
-                        group = "chotot"
-                        buttons = [{"text": f"{nameapp}", "link": "https://chotot.com/", "color":f"{random_color}"}]
-                        
-                        if int(noidungtin)==0:
-                            title = f"{nameapp}: Có {unread_count} tin nhắn"
-                            message = f"{nameapp}: bạn {namefolder} có {unread_count} tin nhắn"
-                        else:    
-                            last_message = driver.find_element(By.CSS_SELECTOR, ".styles_LastMessage__BY5e2.styles_NewMessage__pHpaN").text
-                            userchotot = driver.find_element(By.CSS_SELECTOR, ".styles_UserNameTime__B3N7j.text-1-line").text
-                            title = f"{nameapp}: Có {unread_count} tin nhắn "
-                            message = f"{nameapp}: bạn {namefolder} có khách {userchotot} hỏi {last_message}"    
-                        
-                        if namesms=="pushover":   
-                            result = guisms(tokensms, usersms, message,nameapp)
-                        elif namesms=="alertzy":     
-                            result = send_alertzy_notification(tokensms, title, message,priority,group, buttons)
-                        else:  
-                            print(f"nội dung {message}")    
-                            result =guismssystem(title,message,nologin,random_color)   
-                        print(f"Kết quả đã gửi sms cho {namefolder} {nameapp} {result}")
-                        break
-                        # Gửi thông báo 
-
-                    
-                except Exception as e:
-                    time.sleep(1)
-                    #print("Đợi tin nhắn")
-
-                if time.time() > end_time:
-                    print("Hết giờ không gửi được tin nhắn") 
-                    unread_count = driver.find_element(By.ID, "chat-unread-count").text
-                    print(f"bcde {unread_count}")
-                    time.sleep(0)
-                    break
-    #time.sleep(1)
-        i+=1
-        print(f"hết vòng lập sms {i}")
-        if int(testversion) ==1:
-            driver.get("chrome://version/")
-            body_element = driver.find_element("tag name", "body").text
-            print("Nội dung văn bản của 1 <body>:", body_element)
-        driver.quit()
-        url = 'http://hieuphp.name.vn/api/undetected/updatestatus.php'
-        updatestatus(namefolder,url,"")     
-                             
-        time.sleep(1)
-        driver.quit()
-        return f"Title of the page is"
-    except Exception as e:
-        return f"Error abc "
+            break  # Thoát vòng lặp khi message_value = 1 
+    return f"kết quả của trang là 1"
 
 @app.get("/", response_class=HTMLResponse)
 async def read_index():
