@@ -176,6 +176,7 @@ def lambda_handler():
                 end_time = time.time()
                 elapsed_time = end_time - start_time 
                 vonglap=False
+                driver.quit() 
                 break
            
             #https://chat.chotot.com/chat
