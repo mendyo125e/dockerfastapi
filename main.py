@@ -105,7 +105,7 @@ def lambda_handler():
     }
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
-    #chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
+    chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-gpu")  # Tắt GPU
     chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
@@ -140,18 +140,13 @@ def lambda_handler():
     lt_options["plugin"] = "python-python";
     #chrome_options.set_capability('LT:Options', lt_options);
 
-    # Desired capabilities can be set directly in the options if needed
-
-        # Initialize Remote WebDriver with command_executor and desired capabilities
     #driver = webdriver.Remote(command_executor="http://hub.lambdatest.com:80/wd/hub",options=chrome_options)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
-
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    #driver.execute_cdp_cmd("Network.enable", {})
-    #driver.execute_cdp_cmd("Network.setBlockedURLs", {
-    #    "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
-    #})
+    driver.execute_cdp_cmd("Network.enable", {})
+    driver.execute_cdp_cmd("Network.setBlockedURLs", {
+        "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
+    })
     cookieactive=0
     # Khởi tạo WebDriver "*app-78fdf02df188280d.js*","*framework-670e37c48389d36a.js*",
     while vonglap==True: 
