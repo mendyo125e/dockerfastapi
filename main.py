@@ -94,7 +94,7 @@ def lambda_handler():
     usersms = data.get("user", None)
     random_color = random_color_by_name(namesms)
      # Cấu hình trình duyệt
-    chrome_options = webdriver.ChromeOptions()
+    chrome_options = Options()
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_argument("--blink-settings=imagesEnabled=false")  # Chặn tải hình ảnh
@@ -105,7 +105,7 @@ def lambda_handler():
     }
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36")
-    chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
+    #chrome_options.add_argument("--headless=new")  # Chạy chế độ không giao diện
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-gpu")  # Tắt GPU
     chrome_options.add_argument("--disable-webgl")  # Tắt WebGL
@@ -123,12 +123,35 @@ def lambda_handler():
     chrome_options.add_argument('--ignore-certificate-errors')
     chrome_options.add_argument('--no-zygote')
     chrome_options.add_argument('--remote-debugging-port=9222') 
+
+  
+
+    #chrome_options.browser_version = "130"
+    #chrome_options.platform_name = "Windows 10"
+    lt_options = {};
+    lt_options["username"] = "alexschmidt63ng";
+    lt_options["accessKey"] = "evq0nRPGqRSZOQtu2hcYW2xy18CgxDjUotY1vYFD491PfVxPcd";
+    lt_options["smartUI.project"] = "alexschmidt63ng";
+    lt_options["resolution"] = "1024x768";
+    lt_options["recordVideo"] = "false";
+    lt_options["browserName"] = "Chrome";
+    lt_options["w3c"] = False;
+    lt_options["selenium_version"] = "4.0.0";
+    lt_options["plugin"] = "python-python";
+    #chrome_options.set_capability('LT:Options', lt_options);
+
+    # Desired capabilities can be set directly in the options if needed
+
+        # Initialize Remote WebDriver with command_executor and desired capabilities
+    #driver = webdriver.Remote(command_executor="http://hub.lambdatest.com:80/wd/hub",options=chrome_options)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    driver.execute_cdp_cmd("Network.enable", {})
-    driver.execute_cdp_cmd("Network.setBlockedURLs", {
-        "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
-    })
+    #driver.execute_cdp_cmd("Network.enable", {})
+    #driver.execute_cdp_cmd("Network.setBlockedURLs", {
+    #    "urls": ["*rum123.js*", "*branch-latest.min.js*", "*gpt.js", "*pubads_impl.js*","*gtm.js*","*fbevents.js","*pubads_impl.js*","*gtm.js*","*identify.js","*config.js*","*fbevents.js*"]  # bằng tên file hoặc pattern cần chặn
+    #})
     cookieactive=0
     # Khởi tạo WebDriver "*app-78fdf02df188280d.js*","*framework-670e37c48389d36a.js*",
     while vonglap==True: 
@@ -159,28 +182,31 @@ def lambda_handler():
                     testversion=record.get('testversion', 'Không có testversion')
                     #print(f"Test Version: {testversion}")
                     testbodyelement=record.get('testbodyelement', 'Không có testbodyelement')
-                    print(f"Test Body Element: {testbodyelement}")
+                    #print(f"Test Body Element: {testbodyelement}")
                     viewtmp=record.get('viewtmp', 'Không có xem tmp')
-                    print(f"Xem tmp: {viewtmp}")
+                    #print(f"Xem tmp: {viewtmp}")
                     nhansms=record.get('nhansms', 'Không có nhansms')
-                    print(f"nhansms: {nhansms}")
+                    #print(f"nhansms: {nhansms}")
                     noidungtin=record.get('noidungtin', 'Không có noidungtin')
-                    print(f"noidungtin: {noidungtin}")
+                    #print(f"noidungtin: {noidungtin}")
                     status=record.get('status', 'Không có status')
-                    print(f"Status: {status}") 
+                    #print(f"Status: {status}") 
                                         
             else:
                 print("Đã kiểm tra hết các trang")
                 url = "https://hieuphp.name.vn/api/undetected/updatestatus.php?all=1"  
-                fetch_data_from_api(url)
+                #fetch_data_from_api(url)
                 end_time = time.time()
                 elapsed_time = end_time - start_time 
                 vonglap=False
-                driver.quit() 
+                driver.quit()
                 break
            
             #https://chat.chotot.com/chat
-            url="https://www.chotot.com/my-ads"
+            if int(noidungtin)==0:
+                url="https://www.chotot.com/my-ads"
+            else:    
+                url="https://chat.chotot.com/chat"
 
             driver.get(url)    
             nologin=2        
@@ -224,17 +250,14 @@ def lambda_handler():
 
                 if dathemcookie==1:
                     print("Đã thêm cookie") 
-                    #driver.refresh() 
-                    if int(noidungtin)==0:
-                        url="https://www.chotot.com/my-ads"
-                    else:    
-                        url="https://chat.chotot.com/chat"
-                    driver.get(url)
+                    driver.refresh() 
+                    
+                    #driver.get(url)
                     time.sleep(1)
-                    getcookie=json.dumps(driver.get_cookies())
-                    url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
-                    updatestatus1=updatestatus(namefolder,url,getcookie)
-                    print(f"update sesion theo {namefolder}: {updatestatus1}")
+                    #getcookie=json.dumps(driver.get_cookies())
+                    #url = "https://hieuphp.name.vn/api/undetected/undetected.php?all=1"
+                    #updatestatus1=updatestatus(namefolder,url,getcookie)
+                    #print(f"update sesion theo {namefolder}: {updatestatus1}")
             time.sleep(0) 
             #fetch_data_from_api(url)      
             if int(testbodyelement) ==1:
@@ -242,7 +265,7 @@ def lambda_handler():
                 print("Nội dung văn bản của 1 <body>:", body_element)
 
             if int(nhansms) ==1:
-                timeout = 20       
+                timeout = 10       
                 end_time = time.time() + timeout
                 while True:
                     try:
@@ -276,7 +299,7 @@ def lambda_handler():
                             # Gửi thông báo 
    
                     except Exception as e:
-                        time.sleep(1)
+                        time.sleep(0)
                         #print("Đợi tin nhắn")
 
                     if time.time() > end_time:
@@ -291,8 +314,11 @@ def lambda_handler():
             if int(testversion) ==1:
                 driver.get("chrome://version/")
                 body_element = driver.find_element("tag name", "body").text
-                print("Nội dung văn bản của 1 <body>:", body_element)                       
-            time.sleep(0)
+                print("Nội dung văn bản của 1 <body>:", body_element)
+            url = 'http://hieuphp.name.vn/api/undetected/updatestatus.php'
+            updatestatus(namefolder,url,"")     
+                                  
+            time.sleep(10)
                
         except Exception as e:
             message_value=0
